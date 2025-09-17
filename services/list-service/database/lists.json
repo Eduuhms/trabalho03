@@ -1,0 +1,17 @@
+[
+  {
+    "id": "17d581a0-6a1c-4839-a3ea-ab5cbe1774aa",
+    "userId": "9aefc276-e738-4b31-af2e-787a1ad39395",
+    "name": "Lista Atualizada",
+    "description": "Nova descrição",
+    "status": "active",
+    "items": [],
+    "summary": {
+      "totalItems": 0,
+      "purchasedItems": 0,
+      "estimatedTotal": 0
+    },
+    "createdAt": "2025-09-17T19:03:09.849Z",
+    "updatedAt": "2025-09-17T19:04:53.706Z"
+  }
+]

@@ -251,5 +251,18 @@
     "active": true,
     "createdAt": "2025-09-17T17:26:56.691Z",
     "updatedAt": "2025-09-17T17:27:16.607Z"
+  },
+  {
+    "id": "bd68693f-8fb3-4b42-b51b-a2e86c78c16f",
+    "name": "Novo Produto",
+    "category": "Alimentos",
+    "brand": "Marca Teste",
+    "unit": "kg",
+    "averagePrice": 10.99,
+    "barcode": "7890000000000",
+    "description": "Descrição do produto",
+    "active": true,
+    "createdAt": "2025-09-17T18:48:35.284Z",
+    "updatedAt": "2025-09-17T18:48:35.287Z"
   }
 ]

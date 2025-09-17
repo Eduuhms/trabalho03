@@ -109,7 +109,7 @@ class ItemService {
             }
         });
 
-        // Buscar itens por nome (search)
+        // Buscar itens por nome 
         this.app.get('/search', async (req, res) => {
             try {
                 const { q } = req.query;
@@ -182,13 +182,12 @@ class ItemService {
         });
     }
 
-    // Middleware de autenticação (simples, só verifica se tem Authorization: Bearer ...)
+    // Middleware de autenticação 
     authMiddleware(req, res, next) {
         const authHeader = req.header('Authorization');
         if (!authHeader?.startsWith('Bearer ')) {
             return res.status(401).json({ success: false, message: 'Token obrigatório' });
         }
-        // Aqui poderia validar o JWT, mas para simplificar só exige o header
         next();
     }
 
