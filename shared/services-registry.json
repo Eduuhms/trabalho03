@@ -9,9 +9,9 @@
       "/auth/login",
       "/users/:id"
     ],
-    "registeredAt": 1758128444470,
-    "lastHealthCheck": 1758129374699,
+    "registeredAt": 1758129982012,
+    "lastHealthCheck": 1758130042033,
     "healthy": true,
-    "pid": 10904
+    "pid": 3904
   }
 }
