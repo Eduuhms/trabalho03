@@ -42,16 +42,20 @@ class UserService {
                     
                     await this.usersDb.create({
                         id: uuidv4(),
-                        email: 'admin@microservices.com',
+                        email: 'admin@shopping.com',
                         username: 'admin',
                         password: adminPassword,
                         firstName: 'Administrador',
                         lastName: 'Sistema',
                         role: 'admin',
-                        status: 'active'
+                        status: 'active',
+                        preferences: {
+                            defaultStore: 'Supermercado Central',
+                            currency: 'BRL'
+                        }
                     });
 
-                    console.log('Usuário administrador criado (admin@microservices.com / admin123)');
+                    console.log('Usuário administrador criado (admin@shopping.com / admin123)');
                 }
             } catch (error) {
                 console.error('Erro ao criar dados iniciais:', error);
@@ -110,27 +114,19 @@ class UserService {
                 endpoints: [
                     'POST /auth/register',
                     'POST /auth/login', 
-                    'POST /auth/validate',
-                    'GET /users',
                     'GET /users/:id',
-                    'PUT /users/:id',
-                    'GET /search'
+                    'PUT /users/:id'
                 ]
             });
         });
 
-        // Auth routes
+        // Auth routes - CONFORME TAREFA ROTEIRO 03
         this.app.post('/auth/register', this.register.bind(this));
         this.app.post('/auth/login', this.login.bind(this));
-        this.app.post('/auth/validate', this.validateToken.bind(this));
 
         // User routes (protected)
-        this.app.get('/users', this.authMiddleware.bind(this), this.getUsers.bind(this));
         this.app.get('/users/:id', this.authMiddleware.bind(this), this.getUser.bind(this));
         this.app.put('/users/:id', this.authMiddleware.bind(this), this.updateUser.bind(this));
-        
-        // Search route
-        this.app.get('/search', this.authMiddleware.bind(this), this.searchUsers.bind(this));
     }
 
     setupErrorHandling() {
@@ -166,7 +162,7 @@ class UserService {
         const token = authHeader.replace('Bearer ', '');
         
         try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET || 'user-secret');
+            const decoded = jwt.verify(token, process.env.JWT_SECRET || 'user-service-secret-key-puc-minas');
             req.user = decoded;
             next();
         } catch (error) {
@@ -177,16 +173,16 @@ class UserService {
         }
     }
 
-    // Register user
+    // Register user - CONFORME SCHEMA DA TAREFA
     async register(req, res) {
         try {
-            const { email, username, password, firstName, lastName } = req.body;
+            const { email, username, password, firstName, lastName, preferences } = req.body;
 
             // Validações básicas
             if (!email || !username || !password || !firstName || !lastName) {
                 return res.status(400).json({
                     success: false,
-                    message: 'Todos os campos são obrigatórios'
+                    message: 'Email, username, password, firstName e lastName são obrigatórios'
                 });
             }
 
@@ -211,7 +207,7 @@ class UserService {
             // Hash password
             const hashedPassword = await bcrypt.hash(password, 12);
 
-            // Criar usuário com schema NoSQL flexível
+            // Criar usuário conforme schema da tarefa
             const newUser = await this.usersDb.create({
                 id: uuidv4(),
                 email: email.toLowerCase(),
@@ -219,21 +215,14 @@ class UserService {
                 password: hashedPassword,
                 firstName,
                 lastName,
+                preferences: preferences || {
+                    defaultStore: '',
+                    currency: 'BRL'
+                },
                 role: 'user',
                 status: 'active',
-                profile: {
-                    bio: null,
-                    avatar: null,
-                    preferences: {
-                        theme: 'light',
-                        language: 'pt-BR'
-                    }
-                },
-                metadata: {
-                    registrationDate: new Date().toISOString(),
-                    lastLogin: null,
-                    loginCount: 0
-                }
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             });
 
             const { password: _, ...userWithoutPassword } = newUser;
@@ -245,7 +234,7 @@ class UserService {
                     username: newUser.username,
                     role: newUser.role 
                 },
-                process.env.JWT_SECRET || 'user-secret',
+                process.env.JWT_SECRET || 'user-service-secret-key-puc-minas',
                 { expiresIn: '24h' }
             );
 
@@ -297,10 +286,9 @@ class UserService {
                 });
             }
 
-            // Atualizar dados de login (demonstrando flexibilidade NoSQL)
+            // Atualizar dados de login
             await this.usersDb.update(user.id, {
-                'metadata.lastLogin': new Date().toISOString(),
-                'metadata.loginCount': (user.metadata?.loginCount || 0) + 1
+                updatedAt: new Date().toISOString()
             });
 
             const { password: _, ...userWithoutPassword } = user;
@@ -312,7 +300,7 @@ class UserService {
                     username: user.username,
                     role: user.role 
                 },
-                process.env.JWT_SECRET || 'user-secret',
+                process.env.JWT_SECRET || 'user-service-secret-key-puc-minas',
                 { expiresIn: '24h' }
             );
 
@@ -323,87 +311,6 @@ class UserService {
             });
         } catch (error) {
             console.error('Erro no login:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Erro interno do servidor'
-            });
-        }
-    }
-
-    // Validate token
-    async validateToken(req, res) {
-        try {
-            const { token } = req.body;
-
-            if (!token) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'Token obrigatório'
-                });
-            }
-
-            const decoded = jwt.verify(token, process.env.JWT_SECRET || 'user-secret');
-            const user = await this.usersDb.findById(decoded.id);
-
-            if (!user || user.status !== 'active') {
-                return res.status(401).json({
-                    success: false,
-                    message: 'Usuário não encontrado ou inativo'
-                });
-            }
-
-            const { password: _, ...userWithoutPassword } = user;
-
-            res.json({
-                success: true,
-                message: 'Token válido',
-                data: { user: userWithoutPassword }
-            });
-        } catch (error) {
-            res.status(401).json({
-                success: false,
-                message: 'Token inválido'
-            });
-        }
-    }
-
-    // Get users (com paginação)
-    async getUsers(req, res) {
-        try {
-            const { page = 1, limit = 10, role, status } = req.query;
-            const skip = (page - 1) * parseInt(limit);
-
-            // Filtros NoSQL flexíveis
-            const filter = {};
-            if (role) filter.role = role;
-            if (status) filter.status = status;
-
-            const users = await this.usersDb.find(filter, {
-                skip: skip,
-                limit: parseInt(limit),
-                sort: { createdAt: -1 }
-            });
-
-            // Remove passwords
-            const safeUsers = users.map(user => {
-                const { password, ...safeUser } = user;
-                return safeUser;
-            });
-
-            const total = await this.usersDb.count(filter);
-
-            res.json({
-                success: true,
-                data: safeUsers,
-                pagination: {
-                    page: parseInt(page),
-                    limit: parseInt(limit),
-                    total: total,
-                    pages: Math.ceil(total / parseInt(limit))
-                }
-            });
-        } catch (error) {
-            console.error('Erro ao buscar usuários:', error);
             res.status(500).json({
                 success: false,
                 message: 'Erro interno do servidor'
@@ -447,11 +354,11 @@ class UserService {
         }
     }
 
-    // Update user (demonstrando flexibilidade NoSQL)
+    // Update user
     async updateUser(req, res) {
         try {
             const { id } = req.params;
-            const { firstName, lastName, email, bio, theme, language } = req.body;
+            const { firstName, lastName, email, preferences } = req.body;
 
             // Verificar permissão
             if (req.user.id !== id && req.user.role !== 'admin') {
@@ -469,16 +376,26 @@ class UserService {
                 });
             }
 
-            // Updates flexíveis com schema NoSQL
-            const updates = {};
+            // Verificar se novo email já existe (se foi alterado)
+            if (email && email !== user.email) {
+                const existingEmail = await this.usersDb.findOne({ email: email.toLowerCase() });
+                if (existingEmail) {
+                    return res.status(409).json({
+                        success: false,
+                        message: 'Email já está em uso'
+                    });
+                }
+            }
+
+            // Updates
+            const updates = {
+                updatedAt: new Date().toISOString()
+            };
+            
             if (firstName) updates.firstName = firstName;
             if (lastName) updates.lastName = lastName;
             if (email) updates.email = email.toLowerCase();
-            
-            // Atualizar campos aninhados (demonstrando NoSQL)
-            if (bio !== undefined) updates['profile.bio'] = bio;
-            if (theme) updates['profile.preferences.theme'] = theme;
-            if (language) updates['profile.preferences.language'] = language;
+            if (preferences) updates.preferences = { ...user.preferences, ...preferences };
 
             const updatedUser = await this.usersDb.update(id, updates);
             const { password, ...userWithoutPassword } = updatedUser;
@@ -497,54 +414,13 @@ class UserService {
         }
     }
 
-    // Search users (demonstrando busca NoSQL)
-    async searchUsers(req, res) {
-        try {
-            const { q, limit = 10 } = req.query;
-
-            if (!q) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'Parâmetro de busca "q" é obrigatório'
-                });
-            }
-
-            // Busca full-text NoSQL
-            const users = await this.usersDb.search(q, ['firstName', 'lastName', 'username', 'email']);
-            
-            // Filtrar apenas usuários ativos e remover passwords
-            const safeUsers = users
-                .filter(user => user.status === 'active')
-                .slice(0, parseInt(limit))
-                .map(user => {
-                    const { password, ...safeUser } = user;
-                    return safeUser;
-                });
-
-            res.json({
-                success: true,
-                data: {
-                    query: q,
-                    results: safeUsers,
-                    total: safeUsers.length
-                }
-            });
-        } catch (error) {
-            console.error('Erro na busca de usuários:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Erro interno do servidor'
-            });
-        }
-    }
-
     // Register with service registry
     registerWithRegistry() {
         serviceRegistry.register(this.serviceName, {
             url: this.serviceUrl,
             version: '1.0.0',
             database: 'JSON-NoSQL',
-            endpoints: ['/health', '/auth/register', '/auth/login', '/users', '/search']
+            endpoints: ['/health', '/auth/register', '/auth/login', '/users/:id']
         });
     }
 
