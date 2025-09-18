@@ -1,3 +1,4 @@
+const serviceRegistry = require('../../shared/serviceRegistry');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -7,6 +8,20 @@ const path = require('path');
 const JsonDatabase = require('../../shared/JsonDatabase');
 
 class ItemService {
+    registerWithRegistry() {
+        serviceRegistry.register(this.serviceName, {
+            url: this.serviceUrl,
+            version: '1.0.0',
+            database: 'JSON-NoSQL',
+            endpoints: ['/health', '/categories', '/items', '/items/:id', '/search']
+        });
+    }
+
+    startHealthReporting() {
+        setInterval(() => {
+            serviceRegistry.updateHealth(this.serviceName, true);
+        }, 30000);
+    }
     constructor() {
         this.app = express();
         this.port = process.env.PORT || 3002;
@@ -199,6 +214,8 @@ class ItemService {
             console.log(`Health: ${this.serviceUrl}/health`);
             console.log(`Database: JSON-NoSQL`);
             console.log('=====================================');
+            this.registerWithRegistry();
+            this.startHealthReporting();
         });
     }
 }

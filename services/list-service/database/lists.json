@@ -13,5 +13,20 @@
     },
     "createdAt": "2025-09-17T19:03:09.849Z",
     "updatedAt": "2025-09-17T19:04:53.706Z"
+  },
+  {
+    "id": "620bb0e1-3205-457a-9194-a87bc8bd06d3",
+    "userId": "9aefc276-e738-4b31-af2e-787a1ad39395",
+    "name": "Minha Lista",
+    "description": "Lista de compras",
+    "status": "active",
+    "items": [],
+    "summary": {
+      "totalItems": 0,
+      "purchasedItems": 0,
+      "estimatedTotal": 0
+    },
+    "createdAt": "2025-09-18T01:57:28.324Z",
+    "updatedAt": "2025-09-18T01:57:28.326Z"
   }
 ]
