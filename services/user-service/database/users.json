@@ -78,5 +78,21 @@
     "status": "active",
     "createdAt": "2025-09-17T17:10:57.783Z",
     "updatedAt": "2025-09-18T02:03:21.397Z"
+  },
+  {
+    "id": "76c04a49-1df0-4f63-ac64-d8eec83b20d7",
+    "email": "cliente@demo.com",
+    "username": "cliente",
+    "password": "$2a$12$05FcRWszFel71ootVTYKTuhjl3sp.z496gTaXnUl5vhBrGipJ97KW",
+    "firstName": "Demo",
+    "lastName": "Cliente",
+    "preferences": {
+      "defaultStore": "",
+      "currency": "BRL"
+    },
+    "role": "user",
+    "status": "active",
+    "createdAt": "2025-09-18T15:02:55.627Z",
+    "updatedAt": "2025-09-18T15:02:55.938Z"
   }
 ]
