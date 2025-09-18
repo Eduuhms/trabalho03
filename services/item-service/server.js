@@ -220,9 +220,20 @@ class ItemService {
     }
 }
 
+
 if (require.main === module) {
     const itemService = new ItemService();
     itemService.start();
+
+    // Cleanup automático ao encerrar
+    process.on('SIGTERM', () => {
+        serviceRegistry.unregister('item-service');
+        process.exit(0);
+    });
+    process.on('SIGINT', () => {
+        serviceRegistry.unregister('item-service');
+        process.exit(0);
+    });
 }
 
 module.exports = ItemService;

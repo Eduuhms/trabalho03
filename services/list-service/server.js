@@ -302,9 +302,20 @@ class ListService {
     }
 }
 
+
 if (require.main === module) {
     const listService = new ListService();
     listService.start();
+
+    // Cleanup automático ao encerrar
+    process.on('SIGTERM', () => {
+        serviceRegistry.unregister('list-service');
+        process.exit(0);
+    });
+    process.on('SIGINT', () => {
+        serviceRegistry.unregister('list-service');
+        process.exit(0);
+    });
 }
 
 module.exports = ListService;
