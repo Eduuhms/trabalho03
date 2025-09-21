@@ -112,4 +112,3 @@ Um vídeo de demonstração do sistema estará disponível na pasta `video-apres
 
 ---
 
-Qualquer dúvida, consulte o roteiro ou abra uma issue.
