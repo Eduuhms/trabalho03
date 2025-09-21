@@ -184,5 +184,57 @@
     },
     "createdAt": "2025-09-18T15:02:55.967Z",
     "updatedAt": "2025-09-18T15:02:55.986Z"
+  },
+  {
+    "id": "153f7244-d4aa-4858-ad01-dc89a51e0cf8",
+    "userId": "c9f3167f-0c2e-4df9-a207-810ac49ed542",
+    "name": "Minha Lista",
+    "description": "Lista de teste",
+    "status": "active",
+    "items": [
+      {
+        "itemId": "1a1a1a1a-0001-0001-0001-000000000001",
+        "itemName": "Arroz Branco",
+        "quantity": 2,
+        "unit": "kg",
+        "estimatedPrice": 5.99,
+        "purchased": false,
+        "notes": "",
+        "addedAt": "2025-09-20T23:28:38.319Z"
+      }
+    ],
+    "summary": {
+      "totalItems": 1,
+      "purchasedItems": 0,
+      "estimatedTotal": 11.98
+    },
+    "createdAt": "2025-09-20T23:28:38.231Z",
+    "updatedAt": "2025-09-20T23:28:38.321Z"
+  },
+  {
+    "id": "a6d12b7d-cfe6-4de7-b810-17d3a1b7ed91",
+    "userId": "cb23c7e0-2eb1-41e4-aa72-81d1fba608e9",
+    "name": "Minha Lista",
+    "description": "Lista de teste",
+    "status": "active",
+    "items": [
+      {
+        "itemId": "1a1a1a1a-0001-0001-0001-000000000001",
+        "itemName": "Arroz Branco",
+        "quantity": 2,
+        "unit": "kg",
+        "estimatedPrice": 5.99,
+        "purchased": false,
+        "notes": "",
+        "addedAt": "2025-09-21T00:39:32.696Z"
+      }
+    ],
+    "summary": {
+      "totalItems": 1,
+      "purchasedItems": 0,
+      "estimatedTotal": 11.98
+    },
+    "createdAt": "2025-09-21T00:39:32.637Z",
+    "updatedAt": "2025-09-21T00:39:32.697Z"
   }
 ]

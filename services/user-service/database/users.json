@@ -77,13 +77,13 @@
     "role": "user",
     "status": "active",
     "createdAt": "2025-09-17T17:10:57.783Z",
-    "updatedAt": "2025-09-18T20:15:22.407Z"
+    "updatedAt": "2025-09-20T23:05:42.974Z"
   },
   {
-    "id": "76c04a49-1df0-4f63-ac64-d8eec83b20d7",
+    "id": "cb23c7e0-2eb1-41e4-aa72-81d1fba608e9",
     "email": "cliente@demo.com",
     "username": "cliente",
-    "password": "$2a$12$05FcRWszFel71ootVTYKTuhjl3sp.z496gTaXnUl5vhBrGipJ97KW",
+    "password": "$2a$12$Z5c33Et./dWBMW7rsF4QFOeCrjLqPlPap0ZFPe4F0iTkKqV7231Uy",
     "firstName": "Demo",
     "lastName": "Cliente",
     "preferences": {
@@ -92,7 +92,7 @@
     },
     "role": "user",
     "status": "active",
-    "createdAt": "2025-09-18T15:02:55.627Z",
-    "updatedAt": "2025-09-18T15:02:55.938Z"
+    "createdAt": "2025-09-21T00:39:32.179Z",
+    "updatedAt": "2025-09-21T00:39:32.495Z"
   }
 ]
